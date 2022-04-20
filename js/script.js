@@ -1,7 +1,5 @@
 "use strict";
 
-let index = 0;
-
 const todoControl = document.querySelector('.todo-control');
 const headerInput = document.querySelector('.header-input');
 const todoList = document.querySelector('.todo-list');
@@ -13,7 +11,7 @@ const render = function () {
     todoList.innerHTML = '';
     todoCompleted.innerHTML = '';
 
-    toDoData.forEach((item) => {
+    toDoData.forEach((item, index) => {
         const li = document.createElement('li');
 
         li.classList.add('todo-item');
@@ -37,7 +35,8 @@ const render = function () {
         });
 
         li.querySelector('.todo-remove').addEventListener('click', () => {
-            toDoData.splice(toDoData[item.id], 1);
+            toDoData.splice(index, 1);
+            localStorage.setItem('key', JSON.stringify(toDoData));
             render();
         });
 
@@ -48,17 +47,14 @@ todoControl.addEventListener('submit',  (event) => {
     event.preventDefault();
 
     const newToDo = {
-        id: index,
         text: headerInput.value,
         completed: false
     };
 
-    if (headerInput.value !== '') {
+    if (headerInput.value.trim().length !== 0) {
         toDoData.push(newToDo);
     }
-
     headerInput.value = '';
-    index++;
     localStorage.setItem('key', JSON.stringify(toDoData));
     render();
 });
@@ -73,7 +69,6 @@ window.onload = () => {
 
     loadLocal.forEach((item) => {
         const newToDo = {
-            id: item.id,
             text: item.text,
             completed: item.completed
         };
